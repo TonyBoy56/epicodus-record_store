@@ -17,7 +17,6 @@ class Album
   end
 
   def self.all
-    # @@albums.values()
     returned_albums = DB.exec("SELECT * FROM albums")
     albums = []
     returned_albums.each() do |album|
@@ -26,7 +25,7 @@ class Album
       artist = album.fetch("artist")
       genre = album.fetch("genre")
       year = album.fetch("year")
-      albums.push(Album.new({:name => name, :id => id}))
+      albums.push(Album.new({:name => name, :id => id, :artist => artist, :genre => genre, :year => year}))
     end
     albums
   end
@@ -36,7 +35,6 @@ class Album
   end
 
   def save
-    # @@albums[self.id] = Album.new(self.name, self.id, self.artist, self.genre, self.year)
     result = DB.exec("INSERT INTO albums (name, artist, genre, year) VALUES ('#{@name}', '#{@artist}', '#{@genre}', '#{@year}') RETURNING id;")
       @id = result.first().fetch("id").to_i
   end
@@ -46,8 +44,6 @@ class Album
   end
 
   def self.clear
-    # @@albums = {}
-    # @@total_rows = 0
     DB.exec("DELETE FROM albums *;")
   end
 
@@ -56,7 +52,10 @@ class Album
     album = DB.exec("SELECT * FROM albums  WHERE id = #{id};").first
     name = album.fetch("name")
     id = album.fetch("id").to_i
-    Album.new({:name => name, :id => id})
+    artist = album.fetch("artist")
+    genre = album.fetch("genre")
+    year = album.fetch("year")
+    Album.new({:name => name, :id => id, :artist => artist, :genre => genre, :year => year})
   end
 
   def update(name)
