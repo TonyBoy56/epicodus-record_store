@@ -6,7 +6,7 @@ class Album
   attr_accessor :name, :artist, :genre, :year
   @@albums = {}
   @@total_rows = 0 
-  @@sold_albums = {}
+  # @@sold_albums = {}
 
   def initialize(attributes)
     @name = attributes.fetch(:name)
@@ -48,7 +48,6 @@ class Album
   end
 
   def self.find(id)
-    # @@albums[id]
     album = DB.exec("SELECT * FROM albums  WHERE id = #{id};").first
     name = album.fetch("name")
     id = album.fetch("id").to_i
@@ -59,8 +58,6 @@ class Album
   end
 
   def update(name)
-    # self.name = name
-    # @@albums[self.id] = Album.new(self.name, self.id, self.artist, self.genre, self.year)
     @name = name
     DB.exec("UPDATE albums SET name = '#{@name}' WHERE id = #{@id};")
   end
@@ -82,16 +79,16 @@ class Album
     result
   end
 
-  def self.sort()
-    record_list = @@albums.values
-    sorted_records = record_list.sort_by{ |record| record.name }
-    sorted_records
-  end
+  # def self.sort()
+  #   record_list = @@albums.values
+  #   sorted_records = record_list.sort_by{ |record| record.name }
+  #   sorted_records
+  # end
  
-  def sold()
-    @@sold_albums[self.id] = Album.new(self.name, self.id, self.artist, self.genre, self.year)
-    @@albums.delete(self.id)
-  end
+  # def sold()
+  #   @@sold_albums[self.id] = Album.new(self.name, self.id, self.artist, self.genre, self.year)
+  #   @@albums.delete(self.id)
+  # end
 
   def songs
     Song.find_by_album(self.id)
