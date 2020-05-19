@@ -1,12 +1,15 @@
 require('sinatra')
 require('sinatra/reloader')
 require('./lib/album')
+require('./lib/artist')
 require('pry')
 require('./lib/song')
 require('pg')
 also_reload('lib/**/*.rb')
 
 DB = PG.connect({:dbname => "record_store"})
+
+#  Album Routes #
 
 get('/') do
   @albums = Album.sort
@@ -32,7 +35,7 @@ get('/albums/search') do
   erb(:search)
 end
 
-post('/albums') do ## Adds album to list of albums, cannot access in URL bar
+post('/albums') do 
   name = params[:album_name]
   artist = params[:album_artist]
   year = params[:album_year]
@@ -71,18 +74,6 @@ delete('/albums/:id/songs/:song_id') do
   erb(:album)
 end
 
-# get('/albums/:id/buy') do
-#   @album = Album.find(params[:id].to_i())
-#   erb(:buy_album)
-# end
-
-# patch('albums/:id') do 
-#   @album = Album.find(params[:id].to_i())
-#   @album.sold()
-#   @albums = Album.all_sold
-#   erb(:albums)
-# end
-
 get('/albums/:id/edit') do
   @album = Album.find(params[:id].to_i())
   erb(:edit_album)
@@ -106,6 +97,30 @@ get('/custom_route') do
   "We can even create custom routes, but we should only do this when needed."
 end
 
-## implement sold() method on album.erb
-## implement sort method on albums.erb
-## implement search method on albums.erb
+# Artist Routes #
+
+get('/artists') do
+  @artists = Artist.all()
+  erb(:artists)
+end
+
+get('/artists/new_artist') do
+  erb(:new_artist)
+end
+
+get('/artists/:id') do
+end
+
+post('/artists') do
+  name = params[:name]
+  artist = Artist.new({name: name, id: nil})
+  artist.save()
+  @artists = Artist.all()
+  erb(:artists)
+end
+
+patch('/artists/:id') do
+end
+
+delete('/artists/:id') do
+end

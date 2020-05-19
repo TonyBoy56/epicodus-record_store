@@ -3,15 +3,12 @@ require 'pry'
 class Album
 
   attr_reader :id 
-  attr_accessor :name, :artist, :genre, :year
-  # @@albums = {}
-  # @@total_rows = 0 
-  # # @@sold_albums = {}
+  attr_accessor :name, :genre, :year
+
 
   def initialize(attributes)
     @name = attributes.fetch(:name)
     @id = attributes.fetch(:id) 
-    @artist = attributes.fetch(:artist) 
     @genre = attributes.fetch(:genre) 
     @year = attributes.fetch(:year)
   end
@@ -23,10 +20,9 @@ class Album
     returned_albums.each() do |album|
       name = album.fetch("name")
       id = album.fetch("id").to_i
-      artist = album.fetch("artist")
       genre = album.fetch("genre")
       year = album.fetch("year")
-      albums.push(Album.new({:name => name, :id => id, :artist => artist, :genre => genre, :year => year}))
+      albums.push(Album.new({:name => name, :id => id, :genre => genre, :year => year}))
     end
     albums
   end
@@ -36,7 +32,7 @@ class Album
   end
 
   def save
-    result = DB.exec("INSERT INTO albums (name, artist, genre, year) VALUES ('#{@name}', '#{@artist}', '#{@genre}', '#{@year}') RETURNING id;")
+    result = DB.exec("INSERT INTO albums (name, genre, year) VALUES ('#{@name}', '#{@genre}', '#{@year}') RETURNING id;")
       @id = result.first().fetch("id").to_i
   end
 
@@ -52,10 +48,9 @@ class Album
     album = DB.exec("SELECT * FROM albums  WHERE id = #{id};").first
     name = album.fetch("name")
     id = album.fetch("id").to_i
-    artist = album.fetch("artist")
     genre = album.fetch("genre")
     year = album.fetch("year")
-    Album.new({:name => name, :id => id, :artist => artist, :genre => genre, :year => year})
+    Album.new({:name => name, :id => id, :genre => genre, :year => year})
   end
 
   def update(name)

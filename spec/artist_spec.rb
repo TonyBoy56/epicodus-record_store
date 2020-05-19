@@ -1,4 +1,5 @@
 require('spec_helper')
+require 'artist'
 require 'album'
 require 'song'
 require 'pry'
@@ -48,14 +49,27 @@ describe '#Artist' do
       artist2.save()
       expect(Artist.find(artist.id)).to(eq(artist))
     end
-  end
+  end  
   
+  # describe('#update') do
+  #   it("updates an artist by id") do
+  #     artist = Artist.new({:name => "Axel Rose", :id => nil})
+  #     artist.save()
+  #     artist.update("Will Smith")
+  #     expect(artist.name).to(eq("Will Smith"))
+  #   end
+  # end
+  
+
+
   describe('#update') do
-    it("updates an artist by id") do
-      artist = Artist.new({:name => "Axel Rose", :id => nil})
+    it("adds an album to an artist") do
+      artist = Artist.new({:name => "John Coltrane", :id => nil})
       artist.save()
-      artist.update("Will Smith")
-      expect(artist.name).to(eq("Will Smith"))
+      album = Album.new({:name => "A Love Supreme", :id => nil, :genre => 'blues', :year => 2020})
+      album.save()
+      artist.update({:album_name => "A Love Supreme"})
+      expect(artist.albums).to(eq([album]))
     end
   end
 
