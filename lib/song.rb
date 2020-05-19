@@ -2,14 +2,10 @@ class Song
   attr_reader :id
   attr_accessor :name, :album_id, :songwriter
 
-  @@songs = {}
-  @@total_rows = 0
-
   def initialize(attributes)
     @name = attributes.fetch(:name)
     @album_id = attributes.fetch(:album_id)
-    @id = attributes.fetch(:id) || @@total_rows += 1
-    @songwriter = attributes.fetch(:songwriter)
+    @id = attributes.fetch(:id) 
   end
 
   def ==(song_to_compare)
@@ -21,32 +17,29 @@ class Song
   end
 
   def self.all
-    # @@songs.values
     returned_songs = DB.exec("SELECT * FROM songs;")
     songs = []
     returned_songs.each() do |song|
       name = song.fetch("name")
       album_id = song.fetch("album_id").to_i
       id = song.fetch("id").to_i
-      songwriter = song.fetch("songwriter")
-      songs.push(Song.new({:name => name, :album_id => album_id, :id => id, :songwriter => songwriter}))
+      songs.push(Song.new({:name => name, :album_id => album_id, :id => id}))
     end
     songs
   end
 
   def save
-    result = DB.exec("INSERT INTO songs (name, album_id, songwriter) VALUES ('#{@name}', #{@album_id}, '#{@songwriter}') RETURNING id;")
+    result = DB.exec("INSERT INTO songs (name, album_id) VALUES ('#{@name}', #{@album_id}) RETURNING id;")
     @id = result.first().fetch("id").to_i
   end
 
   def self.find(id)
-    # @@songs[id]
     song = DB.exec("SELECT * FROM songs WHERE id = #{id};").first
     if song
       name = song.fetch("name")
       album_id = song.fetch("album_id").to_i
       id = song.fetch("id").to_i
-      Song.new({:name => name, :album_id => album_id, :id => id, :songwriter => songwriter})
+      Song.new({:name => name, :album_id => album_id, :id => id})
     else
       nil
     end
@@ -76,7 +69,7 @@ class Song
     returned_songs.each() do |song|
       name = song.fetch("name")
       id = song.fetch("id").to_i
-      songs.push(Song.new({:name => name, :album_id => alb_id, :id => id, :songwriter => @songwriter}))
+      songs.push(Song.new({:name => name, :album_id => alb_id, :id => id}))
     end
     songs
   end

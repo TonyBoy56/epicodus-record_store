@@ -4,20 +4,21 @@ class Album
 
   attr_reader :id 
   attr_accessor :name, :artist, :genre, :year
-  @@albums = {}
-  @@total_rows = 0 
-  # @@sold_albums = {}
+  # @@albums = {}
+  # @@total_rows = 0 
+  # # @@sold_albums = {}
 
   def initialize(attributes)
     @name = attributes.fetch(:name)
-    @id = attributes.fetch(:id) || @@total_rows += 1 
+    @id = attributes.fetch(:id) 
     @artist = attributes.fetch(:artist) 
     @genre = attributes.fetch(:genre) 
     @year = attributes.fetch(:year)
   end
 
   def self.all
-    returned_albums = DB.exec("SELECT * FROM albums")
+    # Selet all items in our albums table #
+    returned_albums = DB.exec("SELECT * FROM albums;")
     albums = []
     returned_albums.each() do |album|
       name = album.fetch("name")
@@ -79,16 +80,11 @@ class Album
     result
   end
 
-  # def self.sort()
-  #   record_list = @@albums.values
-  #   sorted_records = record_list.sort_by{ |record| record.name }
-  #   sorted_records
-  # end
- 
-  # def sold()
-  #   @@sold_albums[self.id] = Album.new(self.name, self.id, self.artist, self.genre, self.year)
-  #   @@albums.delete(self.id)
-  # end
+  def self.sort
+    record_list = self.all
+    sorted_records = record_list.sort_by{ |record| record.name }
+    sorted_records
+  end
 
   def songs
     Song.find_by_album(self.id)
